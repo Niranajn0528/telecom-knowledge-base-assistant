@@ -1,0 +1,6 @@
+Topic,Description,Recommended Solution
+PFCP Association Failure,N4 heartbeat timeout between SMF and UPF,Verify N4 connectivity and restart UPF
+PDU Session Reject,DNN mismatch or invalid session configuration,Check DNN configuration and subscriber profile
+Registration Reject,Authentication or subscriber provisioning issue,Verify AMF logs and subscriber configuration
+SCTP Timeout,Lost signaling connection between gNB and AMF,Restart gNB and verify SCTP connectivity
+UPF Down,UPF service unavailable,Restart UPF and verify PFCP association

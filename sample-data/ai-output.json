@@ -1,0 +1,12 @@
+{
+  "question": "Why is PFCP Association Failure occurring?",
+  "historical_match": "INC-1001",
+  "knowledge_topic": "PFCP Association Failure",
+  "root_cause": "N4 heartbeat timeout between SMF and UPF.",
+  "recommended_action": [
+    "Verify N4 connectivity",
+    "Restart UPF",
+    "Check PFCP heartbeat"
+  ],
+  "confidence": "96%"
+}

@@ -1,0 +1,6 @@
+Ticket ID,Severity,Issue,Root Cause,Resolution
+INC-1001,Critical,PFCP Failure,N4 Heartbeat Timeout,Restart UPF
+INC-1002,High,PDU Session Reject,DNN Mismatch,Correct DNN
+INC-1003,Medium,SCTP Timeout,Network Connectivity,Restart gNB
+INC-1004,High,Registration Reject,Subscriber Missing,Update Subscriber
+INC-1005,Critical,UPF Down,UPF Process Crash,Restart Service

@@ -1,0 +1,11 @@
+Why is PFCP Association Failure occurring?
+
+Explain Registration Reject.
+
+How do I resolve PDU Session Reject?
+
+What causes SCTP Timeout?
+
+Explain the purpose of the SMF.
+
+How can I troubleshoot UPF Down?
