@@ -4,9 +4,15 @@ An AI-powered Telecom Knowledge Base Assistant built using n8n, Groq LLM, Google
 
 The assistant retrieves structured telecom knowledge and historical incidents, combines them into a unified context, and generates intelligent troubleshooting recommendations for telecom engineers.
 
+![Status](https://img.shields.io/badge/Project-Completed-success)
+![AI](https://img.shields.io/badge/LLM-Groq-blue)
+![Automation](https://img.shields.io/badge/n8n-Workflow-orange)
+![Telecom](https://img.shields.io/badge/Domain-Telecom-green)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
 ---
 
-## 🚀 Overview
+## 🚀 Project Overview
 
 This project demonstrates how Large Language Models can enhance telecom operations by leveraging existing organizational knowledge stored in structured repositories.
 
@@ -120,6 +126,6 @@ AI Recommendation
 
 ---
 
-Author
+# 👨‍💻 Author
 
-Niranjan Kumar K
+**Niranjan Kumar K**
