@@ -1,0 +1,322 @@
+{
+  "name": "Telecom_Knowledge_Base",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Engineer Question:\n\n{{$('Chat').item.json.chatInput}}\n\nKnowledge Base:\n\n{{$json.kb}}\n\nHistorical Incident Records:\n\n{{$json.history}}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a Senior Telecom NOC Copilot.\n\nAnalyze the engineer question using ONLY the provided Knowledge Base and Historical Incident Records.\n\nRules:\n\n1. Focus only on the requested issue.\n2. Use the KB as the primary source.\n3. Use history to identify trends.\n4. Count similar incidents.\n5. Mention recurring root causes.\n6. Recommend troubleshooting steps.\n7. Recommend escalation if High or Critical incidents exist.\n\nOutput format:\n\nIssue:\nRoot Cause:\nHistorical Incidents Count:\nRecurring Causes:\nTroubleshooting:\nRecommended Action:\nEscalation:"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1056,
+        64
+      ],
+      "id": "3fa6b924-3216-455a-8e83-4d6ba35d988a",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        288
+      ],
+      "id": "93c0a9ac-8ff5-4b7c-a984-80d0e5f2ba13",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "PlAjJlgiud39IeoJ",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all();\n\nlet history = \"\";\n\nfor (const row of rows) {\n  history += `\nIssue Type: ${row.json[\"Issue Type\"]}\nSeverity: ${row.json[\"Severity\"]}\nRoot Cause: ${row.json[\"Root Cause\"]}\n-------------------------\n`;\n}\n\nreturn [{\n  json: {\n    history\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        -96
+      ],
+      "id": "c21cd989-728a-4aa5-a498-d284317cace3",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -528,
+        96
+      ],
+      "id": "8db747ce-318d-406a-be42-c2ea106954b3",
+      "name": "Chat",
+      "webhookId": "7ef431fb-263d-4fef-a938-7e1b605f2192"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all();\n\nlet kb = \"\";\n\nfor (const row of rows) {\n\nkb += `\nIssue: ${row.json.Issue}\nCause: ${row.json.Cause}\nChecks: ${row.json.Checks}\nFix: ${row.json.Fix}\n\n---------------------\n`;\n\n}\n\nreturn [{\n  kb\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        256
+      ],
+      "id": "add0a273-4fc0-4815-8eff-868be18390a7",
+      "name": "Format KB"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        64
+      ],
+      "id": "50a2dfaa-abec-47cf-b2f4-0cdbfba43828",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04ac2491-0273-448c-8d76-39506a446d79",
+              "name": "=search_term",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "ef8c3380-f592-4be5-bd1c-726b5c1dc242",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        96
+      ],
+      "id": "58848648-ce4d-4d15-b646-ef08824cb9db",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1MjBoo7W1jfRm1_2Nv_0fkShX_x4km_2RPcja33B2vBU",
+          "mode": "list",
+          "cachedResultName": "AI Email Analysis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MjBoo7W1jfRm1_2Nv_0fkShX_x4km_2RPcja33B2vBU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1795267900,
+          "mode": "list",
+          "cachedResultName": "Telecom_Incident_History",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MjBoo7W1jfRm1_2Nv_0fkShX_x4km_2RPcja33B2vBU/edit#gid=1795267900"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=Issue Type",
+              "lookupValue": "={{$json.search_term}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        256,
+        -96
+      ],
+      "id": "f4d80b26-020c-4569-9740-e75ce8c5a730",
+      "name": " Historical Incident Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OMlYWQEiATS1gTlF",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1MjBoo7W1jfRm1_2Nv_0fkShX_x4km_2RPcja33B2vBU",
+          "mode": "list",
+          "cachedResultName": "AI Email Analysis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MjBoo7W1jfRm1_2Nv_0fkShX_x4km_2RPcja33B2vBU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1168846113,
+          "mode": "list",
+          "cachedResultName": "Telecom_Knowledge_Base",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MjBoo7W1jfRm1_2Nv_0fkShX_x4km_2RPcja33B2vBU/edit#gid=1168846113"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=Issue",
+              "lookupValue": "={{$json.search_term}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        256,
+        256
+      ],
+      "id": "385d9d08-d34d-40a5-95de-a8a3d3c92f25",
+      "name": " Knowledge Base Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OMlYWQEiATS1gTlF",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format KB": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": " Historical Incident Sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": " Knowledge Base Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    " Historical Incident Sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    " Knowledge Base Sheet": {
+      "main": [
+        [
+          {
+            "node": "Format KB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4eb0e6e2-5a39-4a73-8d15-d217cadc77d5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fadcc29a1ef0d6c91da020448df2bbe59980d81b38e29237657fe57d15485c80"
+  },
+  "id": "MqytY2vfZGR34n59",
+  "tags": []
+}
